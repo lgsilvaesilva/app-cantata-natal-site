@@ -19,6 +19,8 @@ export function segmentControls(segmentId, ctx, { label = 'Ouvir a música', onP
 
   let mine = false;
   let slow = false;
+  let loading = false; // tapped, waiting for the player to load/seek
+  let reachedEnd = false; // this section played until it stopped by itself
   const hint = h('p', { class: 'recorder__warn', role: 'status' });
   const bar = h('div', { class: 'segment-progress__bar' });
   const progress = h('div', { class: 'segment-progress', role: 'progressbar', 'aria-label': 'Andamento do trecho', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0' }, bar);
@@ -44,15 +46,27 @@ export function segmentControls(segmentId, ctx, { label = 'Ouvir a música', onP
     }
     coordinator.beforeMusic();
     mine = true;
+    loading = true;
+    reachedEnd = false;
+    render(player.state);
     if (player.state.rates.includes(0.75)) player.setRate(slow ? 0.75 : 1);
     const ok = await player.playRange(range);
+    loading = false;
+    render(player.state);
     if (ok) onPlayed();
   }
 
+  const playLabel = playBtn.lastChild;
+  let wasActive = false;
+
   function render(s) {
     const active = mine && s.segment && s.segment.id === segmentId;
+    if (active) wasActive = true;
+    else if (wasActive && !s.segment) { reachedEnd = true; wasActive = false; }
     const playing = active && ['playing', 'buffering'].includes(s.playback);
     playBtn.hidden = Boolean(active);
+    playBtn.disabled = loading;
+    playLabel.textContent = loading && !active ? 'Carregando a música…' : label;
     pauseBtn.hidden = !playing;
     resumeBtn.hidden = !(active && s.playback === 'paused');
     againBtn.hidden = !active;
@@ -61,9 +75,10 @@ export function segmentControls(segmentId, ctx, { label = 'Ouvir a música', onP
       const pct = Math.max(0, Math.min(100, ((s.segment.t - s.segment.start) / (s.segment.end - s.segment.start)) * 100));
       bar.style.width = `${pct}%`;
       progress.setAttribute('aria-valuenow', String(Math.round(pct)));
-    } else if (!s.segment) {
-      bar.style.width = mine ? '100%' : '0%';
-      progress.setAttribute('aria-valuenow', mine ? '100' : '0');
+    } else {
+      const pct = reachedEnd && !loading ? 100 : 0;
+      bar.style.width = `${pct}%`;
+      progress.setAttribute('aria-valuenow', String(pct));
     }
   }
 
