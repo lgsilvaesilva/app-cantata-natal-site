@@ -118,6 +118,27 @@ export function createSegmentStore(storage, {
       if (id) delete local[id]; else local = {};
       save();
     },
+    /**
+     * Moves every calibrated section by `delta` seconds, for when the whole
+     * calibration is early or late by the same amount. Returns an error or null.
+     */
+    shiftAll(delta, duration) {
+      const next = {};
+      for (const s of segments) {
+        const v = base(s.id);
+        if (v.start == null || v.end == null) continue;
+        const start = round1(v.start + delta);
+        const end = round1(v.end + delta);
+        const err = validateRange(start, end, duration);
+        if (err) return `${s.label}: ${err}`;
+        next[s.id] = { start, end };
+      }
+      local = { ...local, ...next };
+      save();
+      return null;
+    },
+    /** 'local' (set on this device), 'default' (shipped estimate) or null. */
+    sourceOf: (id) => (local[id] ? 'local' : defaults[id] ? 'default' : null),
 
     exportCode() {
       const out = {};

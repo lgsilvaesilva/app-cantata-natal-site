@@ -22,7 +22,7 @@ export const SEGMENTS = [
   { id: 'verse2-a', label: 'Estrofe de novo: watch out / not cry', hint: 'watch out · cry' },
   { id: 'verse2-b', label: 'Estrofe de novo: not pout / why', hint: 'pout · why' },
   { id: 'chorus-4', label: 'Refrão com “whoa yeah” e “woo hoo”', hint: 'whoa yeah · woo hoo' },
-  { id: 'woohoo', label: 'Woo hoo, woo hoo', hint: 'woo hoo (2 vezes)' },
+  { id: 'woohoo', label: 'Woo hoo, woo hoo', hint: 'woo hoo · woo hoo' },
   { id: 'finale', label: 'Refrão final (3×)', hint: 'Santa Claus… (3 vezes)' },
 ];
 
@@ -42,8 +42,35 @@ export const COMPOSITES = [
 ];
 
 /**
- * Default calibration shipped with the app. `null` = not calibrated yet.
- * Paste the code from the calibration screen here, for example:
- *   export const CALIBRATION = {"video":"nYmPZrvThW8","segments":{"chorus-1":[1.2,9.8]}};
+ * Default calibration shipped with the app (seconds on the YouTube video).
+ *
+ * Source: public synced lyrics for this recording on LRCLIB (lrclib.net,
+ * e.g. entry 5575665, 144 s). No audio was downloaded or analysed. Each section
+ * starts at its first sung line and ends where the next one starts (or ~3.6 s
+ * after its last line when an instrumental gap follows).
+ * These are ESTIMATES until an adult confirms them by ear in "Calibrar
+ * trechos"; the video is 145 s, so a constant offset of up to ~1 s is possible
+ * ("Deslocar todos" fixes that in one tap). The recording continues after the
+ * school excerpt ("Little tin horns…" at 104.6 s), which is not used.
+ *
+ * To replace it, paste the code from the calibration screen here.
  */
-export const CALIBRATION = null;
+export const CALIBRATION = {
+  video: 'nYmPZrvThW8',
+  segments: {
+    'chorus-1': [7.0, 13.0], // Santa Claus… ×2
+    'verse1-a': [13.0, 16.5], // watch out / not cry
+    'verse1-b': [16.5, 19.9], // not pout / telling you why
+    'chorus-2': [19.9, 29.9], // Santa Claus… ×3
+    'list-a': [32.5, 35.8], // making a list / checking it twice
+    'list-b': [35.8, 39.5], // naughty and nice
+    'chorus-3': [39.5, 49.3], // … whoa yeah, Santa Claus… ×3
+    'sleep-a': [51.8, 58.4], // sleeping / awake
+    'sleep-b': [58.4, 64.6], // bad or good / goodness sake (+ echo)
+    'verse2-a': [64.6, 68.8], // watch out / not cry
+    'verse2-b': [68.8, 71.3], // not pout / telling you why
+    'chorus-4': [71.3, 82.9], // … whoa yeah, Santa Claus… ×3
+    woohoo: [82.9, 91.7], // woo hoo
+    finale: [91.7, 101.4], // Santa Claus… ×3 (end of the school excerpt)
+  },
+};

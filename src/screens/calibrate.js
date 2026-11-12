@@ -40,6 +40,10 @@ export async function calibrateScreen(app, { query }, ctx) {
     const end = h('input', { class: 'input', type: 'text', inputmode: 'decimal', id: `e-${seg.id}`, 'aria-describedby': `m-${seg.id}` });
     const msg = h('p', { class: 'calib__msg', id: `m-${seg.id}`, role: 'status' });
     const chip = h('span', { class: 'calib__chip' });
+    const confirm = btn('Está certo', {
+      cls: 'btn--small btn--pine', icon: '✓',
+      onClick: () => { const v = segments.resolve(seg.id); if (v) save({ start: v.start, end: v.end }); },
+    });
     const save = (patch) => {
       const err = segments.set(seg.id, patch, player.getDuration());
       msg.textContent = err ?? 'Salvo ✓';
@@ -69,9 +73,10 @@ export async function calibrateScreen(app, { query }, ctx) {
             await player.playRange(r);
           },
         }),
-        btn('Limpar', { cls: 'btn--small', onClick: () => { segments.clear(seg.id); msg.textContent = 'Trecho limpo.'; msg.classList.remove('is-error'); refresh(); } })),
+        confirm,
+        btn('Limpar', { cls: 'btn--small', onClick: () => { segments.set(seg.id, { start: null, end: null }); msg.textContent = 'Trecho limpo.'; msg.classList.remove('is-error'); refresh(); } })),
       msg);
-    rows.set(seg.id, { row, start, end, chip });
+    rows.set(seg.id, { row, start, end, chip, confirm });
     return row;
   }
 
@@ -80,6 +85,10 @@ export async function calibrateScreen(app, { query }, ctx) {
   const quickBtn = btn('', { cls: 'btn--gold btn--wide calib__quick-btn' });
   const quickMsg = h('p', { role: 'status', class: 'calib__msg' });
   const undoBtn = btn('Desfazer última marca', { cls: 'btn--small', icon: '↩' });
+  const restartBtn = btn('Recomeçar marcação', {
+    cls: 'btn--small', icon: '⏮',
+    onClick: () => { quickIndex = 0; quickMsg.textContent = 'Toque em Tocar e marque de novo a partir da primeira parte.'; paintQuick(); },
+  });
   function paintQuick() {
     quickBtn.lastChild.textContent = quickIndex < SEGMENTS.length
       ? `Começou: ${SEGMENTS[quickIndex].label}`
@@ -133,6 +142,20 @@ export async function calibrateScreen(app, { query }, ctx) {
   });
 
   const summary = h('p', { role: 'status' });
+  const shiftMsg = h('p', { role: 'status', class: 'calib__msg' });
+  const shiftBtn = (delta) => btn(`${delta > 0 ? '+' : '−'}${fmt(Math.abs(delta))} s`, {
+    cls: 'btn--small',
+    onClick: () => {
+      const err = segments.shiftAll(delta, player.getDuration());
+      shiftMsg.textContent = err ?? `Todos os trechos foram movidos ${delta > 0 ? 'para depois' : 'para antes'} em ${fmt(Math.abs(delta))} s.`;
+      shiftMsg.classList.toggle('is-error', Boolean(err));
+      refresh();
+    },
+  });
+  const resetEstimates = btn('Voltar aos tempos estimados', {
+    cls: 'btn--small',
+    onClick: () => { segments.clear(); shiftMsg.textContent = 'Tempos estimados restaurados.'; shiftMsg.classList.remove('is-error'); quickIndex = SEGMENTS.length + 1; paintQuick(); refresh(); },
+  });
   function refresh() {
     const list = segments.list();
     for (const s of list) {
@@ -140,12 +163,15 @@ export async function calibrateScreen(app, { query }, ctx) {
       if (!r) continue;
       if (document.activeElement !== r.start) r.start.value = s.start == null ? '' : fmt(s.start);
       if (document.activeElement !== r.end) r.end.value = s.end == null ? '' : fmt(s.end);
-      r.chip.textContent = s.calibrated ? '✓ pronto' : 'falta configurar';
-      r.chip.classList.toggle('is-ok', s.calibrated);
-      r.row.classList.toggle('is-ok', s.calibrated);
+      const estimate = s.calibrated && s.source === 'default';
+      r.chip.textContent = !s.calibrated ? 'falta configurar' : estimate ? 'estimado: confira' : '✓ conferido';
+      r.chip.classList.toggle('is-ok', s.calibrated && !estimate);
+      r.row.classList.toggle('is-ok', s.calibrated && !estimate);
+      r.confirm.hidden = !estimate;
     }
     const ok = list.filter((s) => s.calibrated).length;
-    summary.textContent = `${ok} de ${list.length} trechos configurados.`;
+    const estimates = list.filter((s) => s.calibrated && s.source === 'default').length;
+    summary.textContent = `${ok} de ${list.length} trechos configurados${estimates ? ` (${estimates} com tempos estimados, ainda não conferidos)` : ''}.`;
     exportBox.value = segments.exportCode();
   }
 
@@ -159,13 +185,20 @@ export async function calibrateScreen(app, { query }, ctx) {
       h('h2', { id: 'c-transport' }, 'Vídeo'),
       h('p', {}, 'Tempo atual: ', clock),
       transport),
+    h('section', { class: 'patch stack', 'aria-labelledby': 'c-check' },
+      h('h2', { id: 'c-check' }, 'Conferir os tempos'),
+      h('p', {}, 'O app já vem com tempos estimados a partir de letras sincronizadas públicas desta gravação. Toque em “Ouvir trecho” em algumas partes abaixo. Se estiver certo, toque em “Está certo”.'),
+      h('p', {}, 'Se todas as partes começarem um pouco cedo ou tarde demais, mova tudo de uma vez:'),
+      h('div', { class: 'btn-row' }, shiftBtn(-0.5), shiftBtn(-0.1), shiftBtn(0.1), shiftBtn(0.5)),
+      shiftMsg,
+      h('div', { class: 'btn-row' }, resetEstimates)),
     h('section', { class: 'patch stack', 'aria-labelledby': 'c-quick' },
-      h('h2', { id: 'c-quick' }, 'Modo rápido'),
+      h('h2', { id: 'c-quick' }, 'Modo rápido (marcar tudo de novo)'),
       h('ol', {},
         h('li', {}, 'Toque em Tocar (acima) e deixe a música correr desde o começo do trecho da escola.'),
         h('li', {}, 'Toque no botão amarelo no momento em que cada parte começa.'),
         h('li', {}, 'No fim, toque em “Terminou o trecho da escola”. Depois ajuste os números abaixo, se precisar.')),
-      quickBtn, h('div', { class: 'btn-row' }, undoBtn), quickMsg),
+      quickBtn, h('div', { class: 'btn-row' }, undoBtn, restartBtn), quickMsg),
     h('section', { class: 'stack', 'aria-labelledby': 'c-rows' },
       h('h2', { id: 'c-rows', class: 'on-dark' }, 'Ajuste fino'),
       h('ol', { class: 'calib__rows' }, SEGMENTS.map(makeRow))),
