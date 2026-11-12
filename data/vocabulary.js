@@ -1,0 +1,46 @@
+// Words and expressions from the school excerpt.
+// `art` is the key of an illustration in src/ui/illustrations.js.
+// `hint` is a clue that helps without giving the answer away.
+
+export const VOCABULARY = [
+  { id: 'santa-claus', en: 'Santa Claus', pt: 'Papai Noel', art: 'santa', phase: 1,
+    hint: 'Ele tem barba branca e roupa vermelha.' },
+  { id: 'town', en: 'town', pt: 'cidade', art: 'town', phase: 1,
+    hint: 'Um lugar com muitas casas e ruas.' },
+  { id: 'comin', en: "comin' to town", pt: 'chegando à cidade', art: 'sleigh', phase: 1,
+    hint: 'Alguém está vindo, está chegando!', say: 'coming to town' },
+  { id: 'watch-out', en: 'watch out', pt: 'tome cuidado / fique atento', art: 'eyes', phase: 2,
+    hint: 'Abra bem os olhos e preste atenção!' },
+  { id: 'cry', en: 'cry', pt: 'chorar', art: 'face-cry', phase: 2,
+    hint: 'É o que fazemos quando estamos tristes.' },
+  { id: 'pout', en: 'pout', pt: 'fazer bico / ficar emburrado', art: 'face-pout', phase: 2,
+    hint: 'Uma carinha de bico, de quem está emburrado.' },
+  { id: 'why', en: 'why', pt: 'por quê', art: 'question', phase: 2,
+    hint: 'A pergunta que a gente faz para saber o motivo.' },
+  { id: 'list', en: 'list', pt: 'lista', art: 'list', phase: 3,
+    hint: 'Um papel com nomes escritos um embaixo do outro.' },
+  { id: 'checking', en: 'checking', pt: 'conferindo', art: 'check', phase: 3,
+    hint: 'Olhar de novo para ver se está tudo certo.' },
+  { id: 'twice', en: 'twice', pt: 'duas vezes', art: 'twice', phase: 3,
+    hint: 'Uma vez… e mais uma!' },
+  { id: 'naughty', en: 'naughty', pt: 'travesso / arteiro', art: 'face-naughty', phase: 3,
+    hint: 'Quem faz arte e bagunça escondido.' },
+  { id: 'nice', en: 'nice', pt: 'legal / bonzinho', art: 'face-nice', phase: 3,
+    hint: 'Quem é gentil e ajuda os outros.' },
+  { id: 'sleeping', en: 'sleeping', pt: 'dormindo', art: 'face-sleeping', phase: 4,
+    hint: 'Olhinhos fechados, na cama… zzz.' },
+  { id: 'awake', en: 'awake', pt: 'acordado', art: 'face-awake', phase: 4,
+    hint: 'Olhos bem abertos, o dia começou!' },
+  { id: 'bad', en: 'bad', pt: 'mau / ruim', art: 'thumbs-down', phase: 4,
+    hint: 'O contrário de bom.' },
+  { id: 'good', en: 'good', pt: 'bom / comportado', art: 'thumbs-up', phase: 4,
+    hint: 'O contrário de mau.' },
+  { id: 'goodness', en: 'goodness', pt: 'bondade', art: 'heart', phase: 4,
+    hint: 'Aquilo que faz a gente ser bom com os outros.' },
+  { id: 'woo-hoo', en: 'woo hoo', pt: 'oba! (animação)', art: 'party', phase: 5,
+    hint: 'Um grito de festa e alegria.' },
+  { id: 'whoa-yeah', en: 'whoa yeah', pt: 'uhu, isso aí! (animação)', art: 'cheer', phase: 5,
+    hint: 'Os braços para cima, com muita energia!' },
+];
+
+export const VOCAB_BY_ID = Object.fromEntries(VOCABULARY.map((w) => [w.id, w]));

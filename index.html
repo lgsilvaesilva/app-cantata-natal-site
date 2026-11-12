@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#1F5C45">
+  <meta name="description" content="Jogo de Natal para aprender inglês e ensaiar a cantata “Santa Claus Is Coming to Town”.">
+  <title>Missão Cantata de Natal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%85%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/grandstander-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/screens.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#app">Pular para o conteúdo</a>
+
+  <header class="topbar" id="topbar" hidden></header>
+
+  <div class="stage" id="stage">
+    <!-- The YouTube player lives here for the whole session. Screens never
+         re-create it: moving or rebuilding an iframe would reload the video. -->
+    <section class="tv" id="music-tv" aria-label="Música: vídeo do YouTube" hidden>
+      <div class="tv__frame">
+        <div class="tv__screen"><div id="yt-host"></div></div>
+      </div>
+      <div class="tv__status" id="tv-status" role="status" aria-live="polite"></div>
+    </section>
+
+    <main id="app" class="app" tabindex="-1">
+      <noscript>
+        <p class="patch">Este jogo precisa de JavaScript ativado no navegador.</p>
+      </noscript>
+    </main>
+  </div>
+
+  <div id="sr-live" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+  <div id="overlay-root"></div>
+</body>
+</html>
