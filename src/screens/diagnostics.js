@@ -3,6 +3,7 @@
 
 import { MIME_CANDIDATES, pickMimeType, recorderSupport } from '../recorder.js';
 import { canShareFiles } from '../download.js';
+import { audioSession } from '../audio-session.js';
 import { btn, h } from '../ui/dom.js';
 import { recorderPanel } from '../ui/recorder-panel.js';
 import { adultGuard } from './adult.js';
@@ -24,6 +25,7 @@ export async function diagnosticsScreen(app, _route, ctx) {
     ['Gravação suportada', recorderSupport(window)],
     ['Formato escolhido', pickMimeType(MR) || '(padrão do navegador)'],
     ...MIME_CANDIDATES.map((m) => [`  ${m}`, MR?.isTypeSupported ? String(MR.isTypeSupported(m)) : 'n/d']),
+    ['Sessão de áudio (iPhone: deve ser playback)', audioSession.type],
     ['Compartilhar arquivo (Salvar em Arquivos)', String(canShareFiles())],
     ['Voz do navegador (speechSynthesis)', tts.supported ? `sim, ${tts.voiceCount()} vozes, inglês: ${tts.hasVoice('en')}, português: ${tts.hasVoice('pt')}` : 'não'],
     ['localStorage', storage.persistent ? 'funciona' : 'bloqueado (progresso só nesta sessão)'],

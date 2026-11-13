@@ -57,11 +57,18 @@ export function canShareFiles(nav = globalThis.navigator) {
 }
 
 /** Resolves to 'shared' | 'cancelled' | 'unsupported' | 'failed'. Must be called from a click. */
+/** "audio/mp4;codecs=mp4a.40.2" → "audio/mp4". Share targets choke on parameters. */
+export function baseMime(mime) {
+  return String(mime || '').split(';')[0].trim().toLowerCase();
+}
+
 export async function shareRecording(blob, filename, nav = globalThis.navigator) {
   try {
-    const file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+    const file = new File([blob], filename, { type: baseMime(blob.type) || 'application/octet-stream' });
     if (!nav?.canShare?.({ files: [file] })) return 'unsupported';
-    await nav.share({ files: [file], title: 'Minha gravação da cantata' });
+    // Files only: with a title or text, WhatsApp on iPhone sends just the
+    // text (or nothing) and drops the audio file.
+    await nav.share({ files: [file] });
     return 'shared';
   } catch (e) {
     return e?.name === 'AbortError' ? 'cancelled' : 'failed';

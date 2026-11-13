@@ -10,7 +10,8 @@ import { createMusicTV } from './ui/music-tv.js';
 import { createRouter } from './router.js';
 import { h, star } from './ui/dom.js';
 import { artSvg } from './ui/illustrations.js';
-import { closeAllOverlays } from './ui/overlays.js';
+import { closeAllOverlays, isAdultUnlocked } from './ui/overlays.js';
+import { audioSession } from './audio-session.js';
 
 import { welcomeScreen } from './screens/welcome.js';
 import { mapScreen } from './screens/map.js';
@@ -20,6 +21,8 @@ import { cantataScreen } from './screens/cantata.js';
 import { adultScreen } from './screens/adult.js';
 import { calibrateScreen } from './screens/calibrate.js';
 import { diagnosticsScreen } from './screens/diagnostics.js';
+
+audioSession.useSpeaker();
 
 const storage = createStorage();
 const progress = createProgress(storage);
@@ -45,8 +48,12 @@ function renderTopbar(path) {
   topbar.replaceChildren(
     h('a', { class: 'topbar__home', href: '#/mapa', 'aria-label': 'Voltar ao mapa da jornada' },
       h('span', { html: artSvg('santa'), 'aria-hidden': 'true' }),
-      h('span', {}, isAdult ? 'Voltar ao jogo' : 'Mapa')),
+      h('span', {}, isAdult ? '← Voltar ao jogo' : 'Mapa')),
     h('span', { class: 'topbar__spacer' }),
+    // An adult who opened a day from the adult area needs a way back to it.
+    !isAdult && isAdultUnlocked()
+      ? h('a', { class: 'topbar__adult', href: '#/adulto' }, '🔑 Adulto')
+      : null,
     h('span', { class: 'star-count', role: 'img', 'aria-label': `${total} de ${MAX_STARS} estrelas` },
       star(true), h('span', { 'aria-hidden': 'true' }, `${total}/${MAX_STARS}`)),
   );

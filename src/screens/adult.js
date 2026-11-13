@@ -36,7 +36,8 @@ export async function adultScreen(app, _route, ctx) {
 
   app.append(h('section', { class: 'adult stack stack--lg' },
     h('header', {}, h('h1', {}, 'Área do adulto'),
-      h('p', {}, 'Acompanhe a jornada, configure a música e entenda a privacidade.')),
+      h('p', {}, 'Acompanhe a jornada, configure a música e entenda a privacidade.'),
+      backRow()),
 
     !storage.persistent ? h('p', { class: 'banner' }, '⚠️ Este navegador não permite guardar dados (modo privado ou dados bloqueados). O progresso e a calibração valem só nesta sessão.') : null,
 
@@ -78,5 +79,13 @@ export async function adultScreen(app, _route, ctx) {
 
     h('section', { class: 'patch stack', 'aria-labelledby': 'a-reset' },
       h('h2', { id: 'a-reset' }, 'Recomeçar'),
-      resetBtn)));
+      resetBtn),
+
+    backRow()));
+}
+
+function backRow() {
+  return h('div', { class: 'btn-row' },
+    h('a', { class: 'btn btn--berry', href: '#/mapa' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '←'), h('span', {}, 'Voltar ao jogo')),
+    h('a', { class: 'btn btn--small', href: '#/' }, 'Tela inicial'));
 }

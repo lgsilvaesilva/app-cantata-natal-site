@@ -4,6 +4,7 @@
 import { createRecorder, RECORDER_MESSAGES } from '../recorder.js';
 import { canShareFiles, downloadRecording, recordingFileName, shareRecording } from '../download.js';
 import { btn, h, notice } from './dom.js';
+import { audioSession } from '../audio-session.js';
 
 const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
@@ -23,10 +24,16 @@ export function recorderPanel(ctx, {
 
   const recorder = createRecorder({
     maxSeconds,
-    beforeStart: async () => { await coordinator.beforeRecord(); if (beforeRecord) await beforeRecord(); },
+    beforeStart: async () => {
+      await coordinator.beforeRecord();
+      if (beforeRecord) await beforeRecord();
+      audioSession.useMic();
+    },
     onChange: (s) => {
       if (s.status === 'recording' && prevStatus !== 'recording' && onStarted) onStarted();
       prevStatus = s.status;
+      // Mic released: send sound back to the loud speaker (iPhone).
+      if (!['requesting-permission', 'recording'].includes(s.status)) audioSession.useSpeaker();
       if (s.status === 'recorded' && s.url) onRecorded(s);
       if (s.status !== 'recorded') { saveNote = ''; stopAudio(); }
       coordinator.notify();
@@ -71,6 +78,7 @@ export function recorderPanel(ctx, {
     if (!url) return;
     if (playing) { stopAudio(); render(); return; }
     player.pause();
+    audioSession.useSpeaker();
     if (audio.src !== url) audio.src = url;
     audio.currentTime = 0;
     audio.play().then(() => { playing = true; render(); }).catch(() => {
