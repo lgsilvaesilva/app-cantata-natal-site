@@ -3,12 +3,13 @@
 import { ACTIVITY_INFO, ACTIVITY_KEYS } from '../../data/lessons.js';
 import { artSvg } from '../ui/illustrations.js';
 import { h, star, stars } from '../ui/dom.js';
-import { dayData, notFound, phaseOf, SLUG_OF, wordChip } from './shared.js';
+import { dayData, isDayLocked, lockedDay, notFound, phaseOf, SLUG_OF, wordChip } from './shared.js';
 
 export function missionScreen(app, { params }, ctx) {
   const { progress, tts } = ctx;
   const d = dayData(params.day);
   if (!d) { notFound(app); return; }
+  if (isDayLocked(progress, d.day)) { lockedDay(app, d.day, ctx); return; }
   const phase = phaseOf(d.day);
   const review = progress.reviewWords(d.day, d.focus);
   const nextAct = ACTIVITY_KEYS.find((a) => !progress.isDone(d.day, a));

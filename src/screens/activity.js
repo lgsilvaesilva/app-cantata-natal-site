@@ -5,13 +5,14 @@ import { RENDERERS } from '../exercises/index.js';
 import { itemsFor } from '../game.js';
 import { append, btn, h } from '../ui/dom.js';
 import { celebrate } from '../ui/overlays.js';
-import { ACT_SLUGS, dayData, notFound, SLUG_OF } from './shared.js';
+import { ACT_SLUGS, dayData, isDayLocked, lockedDay, notFound, SLUG_OF } from './shared.js';
 
 export function activityScreen(app, { params }, ctx) {
   const { progress, tv, navigate } = ctx;
   const d = dayData(params.day);
   const act = ACT_SLUGS[params.act];
   if (!d || !act) { notFound(app, 'Esta atividade não existe.'); return; }
+  if (isDayLocked(progress, d.day)) { lockedDay(app, d.day, ctx); return; }
   const info = ACTIVITY_INFO[act];
 
   let items;

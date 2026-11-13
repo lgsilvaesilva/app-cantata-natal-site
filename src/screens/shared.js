@@ -1,7 +1,8 @@
 import { DAYS, PHASES } from '../../data/lessons.js';
 import { VOCAB_BY_ID } from '../../data/vocabulary.js';
 import { artSvg } from '../ui/illustrations.js';
-import { art, h } from '../ui/dom.js';
+import { art, btn, h, linkBtn } from '../ui/dom.js';
+import { isAdultUnlocked, requireAdult } from '../ui/overlays.js';
 
 export const ACT_SLUGS = { palavras: 'vocab', ouvir: 'listen', falar: 'pronounce', cantar: 'sing' };
 export const SLUG_OF = Object.fromEntries(Object.entries(ACT_SLUGS).map(([slug, key]) => [key, slug]));
@@ -47,4 +48,26 @@ export function notFound(app, message = 'Este dia não existe.') {
   app.append(h('section', { class: 'patch stack' },
     h('h1', {}, 'Ops!'), h('p', {}, message),
     h('a', { class: 'btn btn--berry', href: '#/mapa' }, 'Voltar ao mapa')));
+}
+
+/**
+ * A day ahead of the child's current day, not yet started, opens only for an
+ * adult. Checked by the day and activity screens themselves, so no link or
+ * typed address can skip ahead.
+ */
+export function isDayLocked(progress, day) {
+  return day > progress.currentDay() && progress.starsForDay(day) === 0 && !isAdultUnlocked();
+}
+
+export function lockedDay(app, day, { progress, navigate }) {
+  const current = progress.currentDay();
+  async function unlock() {
+    if (await requireAdult(`O dia ${day} ainda não chegou. Um adulto pode abrir qualquer dia.`)) navigate(location.hash);
+  }
+  app.append(h('section', { class: 'patch stack' },
+    h('h1', {}, `🔒 O dia ${day} ainda não chegou`),
+    h('p', {}, `Primeiro complete o dia ${current}. Cada casinha abre quando a anterior termina!`),
+    h('div', { class: 'btn-row' },
+      linkBtn(`Ir para o dia ${current}`, `#/dia/${current}`, { cls: 'btn--berry', icon: '🎁' }),
+      btn('Sou adulto: abrir', { cls: 'btn--small', icon: '🔑', onClick: unlock }))));
 }

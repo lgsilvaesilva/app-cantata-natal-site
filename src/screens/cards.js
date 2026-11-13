@@ -12,7 +12,7 @@ function thumb(day, earned) {
   const m = cardModel(day);
   const label = earned ? `Carta do dia ${day}: conquistada. Abrir.` : `Carta do dia ${day}: complete as 4 estrelas do dia ${day} para ganhar.`;
   return h('li', { class: `card-thumb ${earned ? 'is-earned' : 'is-locked'}`, style: `--card-color: ${m.color}` },
-    h('a', { class: 'card-thumb__link', href: earned ? `#/cartas/${day}` : `#/dia/${day}`, 'aria-label': label },
+    h('a', { class: 'card-thumb__link', href: `#/cartas/${day}`, 'aria-label': label },
       h('span', { class: 'card-thumb__day', 'aria-hidden': 'true' }, `Dia ${day}`),
       earned
         ? h('span', { class: 'card-thumb__art', 'aria-hidden': 'true' }, m.words.slice(0, 2).map((w) => art(artSvg(w.art))))
