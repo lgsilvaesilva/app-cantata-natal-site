@@ -78,5 +78,9 @@ export function mapScreen(app, _route, ctx) {
       h('div', { class: 'btn-row' },
         h('a', { class: 'btn btn--berry', href: `#/dia/${current}` }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎁'), h('span', {}, `Ir para o dia ${current}`)),
         h('a', { class: 'btn btn--small btn--gold', href: '#/cantata' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎤'), h('span', {}, 'Grande Cantata')))),
-    h('div', { class: 'map__villages' }, villages)));
+    h('div', { class: 'map__villages' }, villages),
+    // The adult area asks an adult to hold a button for 2 s before opening.
+    h('footer', { class: 'map__footer' },
+      h('a', { class: 'btn btn--small', href: '#/adulto' },
+        h('span', { class: 'ico', 'aria-hidden': 'true' }, '🔑'), h('span', {}, 'Área do adulto')))));
 }

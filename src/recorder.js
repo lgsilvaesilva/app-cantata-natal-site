@@ -8,7 +8,18 @@
 // discarding revokes the previous URL; the microphone tracks are stopped as
 // soon as a recording ends.
 
-export const MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/webm'];
+// AAC in MP4 (.m4a) first: it is the only format WhatsApp and the Files app on
+// iPhone accept. Safari 18.4+ can also record WebM, which they reject, so on
+// Apple's WebKit plain MP4 is preferred over WebM too.
+export const MIME_CANDIDATES = ['audio/mp4;codecs=mp4a.40.2', 'audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/webm'];
+const APPLE_CANDIDATES = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+
+/** Safari on Mac, or any browser on iPhone/iPad (they all use WebKit). */
+export function isAppleWebKit(ua = globalThis.navigator?.userAgent ?? '', touchPoints = globalThis.navigator?.maxTouchPoints ?? 0) {
+  if (/iPhone|iPad|iPod/.test(ua)) return true;
+  if (/Macintosh/.test(ua) && touchPoints > 1) return true; // iPad asking for the desktop site
+  return /Safari\//.test(ua) && !/Chrome|Chromium|CriOS|Edg|Firefox|FxiOS|Android/.test(ua);
+}
 
 export const RECORDER_MESSAGES = {
   insecure: 'Para usar o microfone, o site precisa abrir em https:// (ou localhost). Peça ajuda a um adulto.',
@@ -21,9 +32,9 @@ export const RECORDER_MESSAGES = {
   empty: 'Não ouvimos nada nesta gravação. Vamos tentar de novo?',
 };
 
-export function pickMimeType(MR) {
+export function pickMimeType(MR, apple = isAppleWebKit()) {
   if (!MR || typeof MR.isTypeSupported !== 'function') return '';
-  for (const type of MIME_CANDIDATES) {
+  for (const type of apple ? APPLE_CANDIDATES : MIME_CANDIDATES) {
     try {
       if (MR.isTypeSupported(type)) return type;
     } catch { /* ignore */ }

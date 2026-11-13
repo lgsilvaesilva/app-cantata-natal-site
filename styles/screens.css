@@ -180,3 +180,5 @@
 
 /* Empty stars on the dark felt background need light outlines to be seen. */
 .mission__head .star--empty path, .map__intro .star--empty path { fill: rgba(251, 248, 242, 0.14); stroke: rgba(251, 248, 242, 0.7); }
+
+.map__footer { display: flex; justify-content: center; margin-top: 32px; }
