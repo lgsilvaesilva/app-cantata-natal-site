@@ -21,6 +21,7 @@ import { cantataScreen } from './screens/cantata.js';
 import { adultScreen } from './screens/adult.js';
 import { calibrateScreen } from './screens/calibrate.js';
 import { diagnosticsScreen } from './screens/diagnostics.js';
+import { cardScreen, cardsScreen } from './screens/cards.js';
 
 audioSession.useSpeaker();
 
@@ -78,6 +79,8 @@ const router = createRouter({
     ['/dia/:day', wrap(missionScreen)],
     ['/dia/:day/:act', wrap(activityScreen)],
     ['/cantata', wrap(cantataScreen)],
+    ['/cartas', wrap(cardsScreen)],
+    ['/cartas/:day', wrap(cardScreen)],
     ['/adulto', wrap(adultScreen)],
     ['/adulto/trechos', wrap(calibrateScreen)],
     ['/adulto/diagnostico', wrap(diagnosticsScreen)],

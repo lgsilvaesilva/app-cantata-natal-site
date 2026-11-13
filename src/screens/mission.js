@@ -38,7 +38,9 @@ export function missionScreen(app, { params }, ctx) {
       ? h('div', { class: 'patch patch--paper stack mission__done' },
         h('h2', {}, 'Missão completa! 🎉'),
         h('p', {}, 'Você pode jogar qualquer presente de novo para treinar.'),
+        h('p', {}, `🏅 Você ganhou a carta do dia ${d.day}!`),
         h('div', { class: 'btn-row' },
+          h('a', { class: 'btn btn--gold', href: `#/cartas/${d.day}` }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🏅'), h('span', {}, 'Minha carta')),
           d.day < 15 ? h('a', { class: 'btn btn--berry', href: `#/dia/${d.day + 1}` }, `Ir para o dia ${d.day + 1}`) : h('a', { class: 'btn btn--berry', href: '#/cantata' }, 'Ir para a Grande Cantata'),
           h('a', { class: 'btn btn--small', href: '#/mapa' }, 'Ver o mapa')))
       : h('div', { class: 'btn-row' },

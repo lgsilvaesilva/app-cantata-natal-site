@@ -182,3 +182,27 @@
 .mission__head .star--empty path, .map__intro .star--empty path { fill: rgba(251, 248, 242, 0.14); stroke: rgba(251, 248, 242, 0.7); }
 
 .map__footer { display: flex; justify-content: center; margin-top: 32px; }
+
+/* ── Cards: album and one card ─────────────────────────────────────── */
+.cards__head { color: var(--snow); display: grid; gap: 4px; }
+.cards__head h1 { color: var(--snow); margin: 0; }
+.cards__head p { margin: 0; }
+.cards__locked { font-size: 3rem; margin: 0; text-align: center; }
+.card-album { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 760px) { .card-album { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.card-thumb__link {
+  display: grid; justify-items: center; align-content: start; gap: 4px; aspect-ratio: 4 / 5;
+  padding: 8px 6px; border-radius: 16px; border: 5px solid var(--card-color); background: var(--snow);
+  color: var(--ink); text-decoration: none; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25); min-width: 0;
+}
+.card-thumb__link:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25); }
+.card-thumb__day { font-family: var(--font-display); font-weight: 800; font-size: var(--step-0); color: var(--card-color); }
+.card-thumb__art { display: flex; justify-content: center; gap: 2px; width: 100%; }
+.card-thumb__art .art { width: min(44px, 45%); }
+.card-thumb__art svg { width: 100%; height: auto; }
+.card-thumb__word { font-weight: 700; font-size: 0.8rem; text-align: center; overflow-wrap: anywhere; line-height: 1.15; }
+.card-thumb__lock { font-family: var(--font-display); font-weight: 800; font-size: 2.6rem; line-height: 1.2; color: var(--ink-soft); }
+.card-thumb.is-locked .card-thumb__link { background: var(--paper); border-color: #A89B8C; box-shadow: none; opacity: 0.8; }
+.card-thumb.is-locked .card-thumb__day { color: var(--ink-soft); }
+.card-preview { display: grid; place-items: center; min-height: 200px; color: var(--snow); }
+.card-preview img { display: block; width: min(100%, 480px); height: auto; border-radius: 18px; box-shadow: 0 8px 0 rgba(0, 0, 0, 0.25); -webkit-touch-callout: default; }

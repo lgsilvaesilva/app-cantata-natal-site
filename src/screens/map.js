@@ -2,12 +2,13 @@
 // Days are never irreversibly locked: future days ask for an adult first.
 
 import { DAYS, PHASES } from '../../data/lessons.js';
+import { PHASE_COLORS } from '../card.js';
 import { MAX_STARS } from '../progress.js';
 import { artSvg } from '../ui/illustrations.js';
 import { art, h, stars } from '../ui/dom.js';
 import { requireAdult } from '../ui/overlays.js';
 
-const ROOF = ['#C8283C', '#2F5FA8', '#E8B23A', '#7A4BA0', '#1F5C45'];
+const ROOF = PHASE_COLORS;
 
 function houseSvg(phaseIndex, state) {
   const roof = ROOF[phaseIndex];
@@ -77,7 +78,8 @@ export function mapScreen(app, _route, ctx) {
       h('p', {}, `${progress.completedDays()} de ${DAYS.length} dias completos. ${total} de ${MAX_STARS} estrelas.`),
       h('div', { class: 'btn-row' },
         h('a', { class: 'btn btn--berry', href: `#/dia/${current}` }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎁'), h('span', {}, `Ir para o dia ${current}`)),
-        h('a', { class: 'btn btn--small btn--gold', href: '#/cantata' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎤'), h('span', {}, 'Grande Cantata')))),
+        h('a', { class: 'btn btn--small btn--gold', href: '#/cantata' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎤'), h('span', {}, 'Grande Cantata')),
+        h('a', { class: 'btn btn--small', href: '#/cartas' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🏅'), h('span', {}, `Minhas cartas (${progress.completedDays()}/${DAYS.length})`)))),
     h('div', { class: 'map__villages' }, villages),
     // The adult area asks an adult to hold a button for 2 s before opening.
     h('footer', { class: 'map__footer' },

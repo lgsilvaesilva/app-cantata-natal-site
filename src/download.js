@@ -46,23 +46,26 @@ export function downloadRecording(url, filename, doc = document) {
   a.remove();
 }
 
-export function canShareFiles(nav = globalThis.navigator) {
+const PROBE_NAMES = { 'image/png': 'probe.png', 'audio/mp4': 'probe.m4a' };
+
+/** Whether the share sheet accepts a file of this type (tested with a tiny probe file). */
+export function canShareFiles(nav = globalThis.navigator, type = 'audio/mp4') {
   try {
     if (!nav?.canShare || typeof File === 'undefined') return false;
-    const probe = new File([new Blob(['x'], { type: 'audio/mp4' })], 'probe.m4a', { type: 'audio/mp4' });
+    const probe = new File([new Blob(['x'], { type })], PROBE_NAMES[type] ?? 'probe.bin', { type });
     return nav.canShare({ files: [probe] });
   } catch {
     return false;
   }
 }
 
-/** Resolves to 'shared' | 'cancelled' | 'unsupported' | 'failed'. Must be called from a click. */
 /** "audio/mp4;codecs=mp4a.40.2" → "audio/mp4". Share targets choke on parameters. */
 export function baseMime(mime) {
   return String(mime || '').split(';')[0].trim().toLowerCase();
 }
 
-export async function shareRecording(blob, filename, nav = globalThis.navigator) {
+/** Resolves to 'shared' | 'cancelled' | 'unsupported' | 'failed'. Must be called from a click. */
+export async function shareFile(blob, filename, nav = globalThis.navigator) {
   try {
     const file = new File([blob], filename, { type: baseMime(blob.type) || 'application/octet-stream' });
     if (!nav?.canShare?.({ files: [file] })) return 'unsupported';
@@ -74,3 +77,5 @@ export async function shareRecording(blob, filename, nav = globalThis.navigator)
     return e?.name === 'AbortError' ? 'cancelled' : 'failed';
   }
 }
+
+export const shareRecording = shareFile;

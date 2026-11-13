@@ -38,7 +38,7 @@ function openOverlay(card, { onEscape } = {}) {
 }
 
 /** Star burst. Resolves when the child taps "Continuar". */
-export function celebrate({ title = 'Você ganhou uma estrela!', text = '', seal = null, starWon = true } = {}) {
+export function celebrate({ title = 'Você ganhou uma estrela!', text = '', seal = null, cardDay = null, starWon = true } = {}) {
   return new Promise((resolve) => {
     const sparks = Array.from({ length: 10 }, (_, i) => {
       const angle = (i / 10) * Math.PI * 2;
@@ -57,11 +57,12 @@ export function celebrate({ title = 'Você ganhou uma estrela!', text = '', seal
       burst, heading,
       text ? h('p', {}, text) : null,
       seal ? h('p', {}, h('strong', {}, `Novo selo: ${seal.name}!`)) : null,
+      cardDay ? h('p', { class: 'celebrate__card' }, h('strong', {}, `🏅 Você ganhou a carta do dia ${cardDay}!`)) : null,
       !starWon ? h('p', {}, 'Você já tinha esta estrela. Que bom treinar de novo!') : null,
       go);
     const close = openOverlay(card, { onEscape: () => { close(); resolve(); } });
     card.parentElement.setAttribute('aria-labelledby', 'celebrate-title');
-    announce(`${title} ${text}`);
+    announce(`${title} ${text}${cardDay ? ` Você ganhou a carta do dia ${cardDay}!` : ''}`);
     go.focus();
   });
 }

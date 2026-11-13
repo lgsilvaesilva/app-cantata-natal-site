@@ -76,6 +76,7 @@ export function activityScreen(app, { params }, ctx) {
       title: result.newStar ? 'Você ganhou uma estrela!' : 'Muito bem!',
       text: result.dayCompleted && result.newStar ? `Dia ${d.day} completo!` : '',
       seal: result.seal,
+      cardDay: result.dayCompleted && result.newStar ? d.day : null,
       starWon: result.newStar,
     });
     if (!document.contains(stage)) return;
@@ -85,6 +86,7 @@ export function activityScreen(app, { params }, ctx) {
         ? h('p', {}, 'Agora é a hora da Grande Cantata: cante tudo e grave sua apresentação!')
         : null,
       h('div', { class: 'btn-row' },
+        progress.isDayComplete(d.day) ? h('a', { class: 'btn btn--gold', href: `#/cartas/${d.day}` }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🏅'), h('span', {}, 'Ver minha carta')) : null,
         d.sing.cantata && act === 'sing' ? h('a', { class: 'btn btn--gold', href: '#/cantata' }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎤'), h('span', {}, 'Grande Cantata')) : null,
         nextAct
           ? h('a', { class: 'btn btn--berry', href: `#/dia/${d.day}/${SLUG_OF[nextAct]}` }, h('span', { class: 'ico', 'aria-hidden': 'true' }, '🎁'), h('span', {}, `Próximo presente: ${ACTIVITY_INFO[nextAct].short}`))
