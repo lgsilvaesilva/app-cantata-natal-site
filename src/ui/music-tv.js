@@ -17,6 +17,9 @@ const ERROR_TEXT = {
   unknown: 'O vídeo não pôde ser carregado.',
 };
 
+const IS_IOS = typeof navigator !== 'undefined'
+  && (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
 export function createMusicTV({ player }) {
   const tv = document.getElementById('music-tv');
   const stage = document.getElementById('stage');
@@ -49,6 +52,9 @@ export function createMusicTV({ player }) {
       status.append(notice('info', '🐢', h('p', {}, 'A internet está lenta… a música já vai tocar.')));
     } else if (s.offline) {
       status.append(notice('info', '📶', h('p', {}, 'Parece que a internet caiu. Se a música parar, espere a conexão voltar.')));
+    } else if (IS_IOS) {
+      // A web page cannot unmute the YouTube player when the silent switch is on.
+      status.append(h('p', { class: 'tv__tip' }, '🔔 Sem som? Desligue o modo silencioso do iPhone e aumente o volume.'));
     }
   }
 

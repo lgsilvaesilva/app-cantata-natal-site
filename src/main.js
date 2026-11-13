@@ -8,7 +8,7 @@ import { createTTS } from './tts.js';
 import { createCoordinator } from './audio-coordinator.js';
 import { createMusicTV } from './ui/music-tv.js';
 import { createRouter } from './router.js';
-import { h, star } from './ui/dom.js';
+import { append, h, star } from './ui/dom.js';
 import { artSvg } from './ui/illustrations.js';
 import { closeAllOverlays, isAdultUnlocked } from './ui/overlays.js';
 import { audioSession } from './audio-session.js';
@@ -45,7 +45,9 @@ function renderTopbar(path) {
   if (path === '/') { topbar.hidden = true; return; }
   topbar.hidden = false;
   const total = progress.totalStars();
-  topbar.replaceChildren(
+  // append() skips null; native replaceChildren would print "null".
+  topbar.replaceChildren();
+  append(topbar,
     h('a', { class: 'topbar__home', href: '#/mapa', 'aria-label': 'Voltar ao mapa da jornada' },
       h('span', { html: artSvg('santa'), 'aria-hidden': 'true' }),
       h('span', {}, isAdult ? '← Voltar ao jogo' : 'Mapa')),
