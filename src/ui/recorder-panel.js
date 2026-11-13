@@ -102,8 +102,8 @@ export function recorderPanel(ctx, {
     saveNote = {
       shared: 'Pronto! A gravação foi enviada para onde você escolheu.',
       cancelled: 'Compartilhamento cancelado. A gravação continua aqui.',
-      unsupported: 'Este aparelho não permite compartilhar o arquivo. Use “Baixar minha gravação”.',
-      failed: 'Não foi possível compartilhar. Tente “Baixar minha gravação”.',
+      unsupported: 'Este aparelho não permite compartilhar o arquivo. Use “Baixar gravação”.',
+      failed: 'Não foi possível compartilhar. Tente “Baixar gravação”.',
     }[result];
     render();
   }
@@ -145,16 +145,16 @@ export function recorderPanel(ctx, {
       parts.push(h('p', { class: 'recorder__status', role: 'status' }, 'Preparando sua gravação…'));
     } else if (s.status === 'recorded') {
       parts.push(
-        h('p', { class: 'recorder__status', role: 'status' }, '✅ Gravação pronta! ',
+        h('p', { class: 'recorder__status', role: 'status' }, h('span', {}, '✅ Gravação pronta!'),
           (timerEl = h('span', { class: 'recorder__timer' }, `(${fmt(s.seconds)})`))),
         s.autoStopped ? h('p', {}, 'Paramos automaticamente no tempo máximo.') : null,
         s.error === 'interrupted' ? h('p', {}, RECORDER_MESSAGES.interrupted) : null,
         h('div', { class: 'btn-row' },
-          btn(playing ? 'Parar de ouvir' : 'Ouvir minha voz', { cls: 'btn--pine', icon: playing ? '⏹' : '🔊', onClick: togglePlayback }),
+          btn(playing ? 'Parar de ouvir' : 'Ouvir minha voz', { cls: 'btn--pine btn--small', icon: playing ? '⏹' : '🔊', onClick: togglePlayback }),
           btn('Gravar de novo', { cls: 'btn--small', icon: '🎙', onClick: beginCountdown })),
         h('div', { class: 'btn-row' },
-          btn('Baixar minha gravação', { cls: 'btn--small btn--gold', icon: '⬇', onClick: download }),
-          shareSupported ? btn('Salvar ou compartilhar', { cls: 'btn--small', icon: '📤', onClick: share }) : null,
+          btn('Baixar gravação', { cls: 'btn--small btn--gold', icon: '⬇', onClick: download }),
+          shareSupported ? btn('Compartilhar', { cls: 'btn--small', icon: '📤', onClick: share }) : null,
           btn('Apagar', { cls: 'btn--small', icon: '🗑', onClick: () => recorder.discard() })),
         saveNote ? h('p', { role: 'status' }, saveNote) : null,
       );

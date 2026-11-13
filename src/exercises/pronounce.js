@@ -43,8 +43,8 @@ export function pronounceExercise(el, item, api) {
   });
   cleanups.push(rec.cleanup);
 
-  const spokeAloud = btn('Falei em voz alta (sem gravar)', {
-    cls: 'btn--small', icon: '🗣',
+  const spokeAloud = btn('Falei sem gravar', {
+    cls: 'btn--small btn--wide', icon: '🗣',
     onClick: () => { markDone(2); finish.disabled = false; finish.focus(); },
   });
 
